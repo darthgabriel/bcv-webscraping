@@ -36,7 +36,7 @@ export default function Home() {
 			<main>
 				<Image width={300} height={300} objectFit='cover' src={'/bcvlogo.png'} alt='' />
 				<h1>$ USD {tasa}</h1>
-				<h3>{fecha}</h3>
+				<h4>{fecha}</h4>
 			</main>
 
 			<footer>
