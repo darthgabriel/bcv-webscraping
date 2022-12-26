@@ -19,9 +19,9 @@ export default async function handler(req, res) {
 				limpio = Number(limpio);
 				return limpio;
 			})
-			.catch((err) => console.error(err));
+			.catch((e) => console.error('SIN CONEXION'));
 
-		res.status(201).json({ tasa });
+		res.status(201).json({ tasa: isFinite(tasa) === true ? tasa : 0.00  });
 	} else {
 		res.status(401).end();
 	}

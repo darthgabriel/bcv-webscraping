@@ -6,6 +6,10 @@ body {
   text-align: center;
 }
 
+h1 {
+  font-size: 8vh;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
