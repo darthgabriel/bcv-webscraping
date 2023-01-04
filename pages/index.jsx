@@ -27,7 +27,7 @@ export default function Home() {
 
 	return (
 		
-		<div>
+		<>
 			<Head>
 				<title>BCV - Webscraping</title>
 				<meta name='description' content='BCV WebScraping' />
@@ -36,7 +36,7 @@ export default function Home() {
 
 			<main>
 				<Image width={200} height={200} objectFit='cover' src={'/bcvlogo.png'} alt='' />
-				<h1>$ USD {tasa}</h1>
+				<h1>$ USD <br /> {tasa}</h1>
 				 {tasa > 0 && <Conversor tasa={tasa} />}
 				<h4>{fecha}</h4>
 			</main>
@@ -44,7 +44,7 @@ export default function Home() {
 			<footer>
 				Powered by Ing. Jose Paredes
 			</footer>
-		</div>
+		</>
 	);
 }
 
@@ -61,7 +61,7 @@ const Conversor = ({tasa}) => {
 	return (
 		<div className='conversor'>
 			<label htmlFor="monto">$</label>
-			<input type="number" name="monto" onKeyUp={cambio} autoComplete={'off'} onClick={(e) => e.target.value = ""}/>
+			<input type="number" name="monto" autoFocus onKeyUp={cambio} autoComplete={'off'} onClick={(e) => e.target.value = ""}/>
 			<label htmlFor="total">Bs</label>
 			<input type="number" name="total" readOnly ref={total}/>
 		</div>
