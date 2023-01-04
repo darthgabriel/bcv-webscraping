@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
 import Image from 'next/image';
@@ -26,6 +26,7 @@ export default function Home() {
 	}, []);
 
 	return (
+		
 		<div>
 			<Head>
 				<title>BCV - Webscraping</title>
@@ -34,8 +35,9 @@ export default function Home() {
 			</Head>
 
 			<main>
-				<Image width={300} height={300} objectFit='cover' src={'/bcvlogo.png'} alt='' />
+				<Image width={200} height={200} objectFit='cover' src={'/bcvlogo.png'} alt='' />
 				<h1>$ USD {tasa}</h1>
+				 {tasa > 0 && <Conversor tasa={tasa} />}
 				<h4>{fecha}</h4>
 			</main>
 
@@ -44,4 +46,24 @@ export default function Home() {
 			</footer>
 		</div>
 	);
+}
+
+const Conversor = ({tasa}) => {
+
+	const total = useRef();
+
+	const cambio = (e) => {
+		const monto = Number(e.target.value)
+		const conversion = monto * tasa;
+		total.current.value = conversion;
+	}
+
+	return (
+		<div className='conversor'>
+			<label htmlFor="monto">$</label>
+			<input type="number" name="monto" onKeyUp={cambio} autoComplete={'off'} onClick={(e) => e.target.value = ""}/>
+			<label htmlFor="total">Bs</label>
+			<input type="number" name="total" readOnly ref={total}/>
+		</div>
+	)
 }

@@ -6,8 +6,27 @@ body {
   text-align: center;
 }
 
+main {
+  width: 412px;
+
+}
+
 h1 {
   font-size: 8vh;
+}
+
+.conversor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2vw;
+  padding-bottom: 1vw;
+}
+
+input {
+  width: 30vw;
+  text-align: end;
 }
 
 @media (prefers-color-scheme: dark) {
