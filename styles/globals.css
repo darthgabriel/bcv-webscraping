@@ -8,11 +8,10 @@ body {
 
 main {
   width: 412px;
-
 }
 
 h1 {
-  font-size: 5vw;
+  font-size: 5vh;
 }
 
 .conversor {
@@ -20,23 +19,13 @@ h1 {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  gap: 1vw;
-  padding-bottom: 1vw;
+  gap: 1vh;
+  padding-bottom: 1vh;
 }
 
 input {
-  width: 30vw;
-  height: 2vw;
+  width: 30vh;
+  height: 2vh;
   text-align: end;
   font-family: monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
 }
