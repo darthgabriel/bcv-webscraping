@@ -5,6 +5,8 @@ import Image from 'next/image';
 import moment from 'moment';
 import 'moment/locale/es';
 
+import Conversor from '../components/Conversor'
+
 export default function Home() {
 
   const getTasaBcv = () => {
@@ -48,22 +50,4 @@ export default function Home() {
 	);
 }
 
-const Conversor = ({tasa}) => {
 
-	const total = useRef();
-
-	const cambio = (e) => {
-		const monto = Number(e.target.value)
-		const conversion = monto * tasa;
-		total.current.value = conversion;
-	}
-
-	return (
-		<div className='conversor'>
-			<label htmlFor="monto">$</label>
-			<input type="number" name="monto" autoFocus onKeyUp={cambio} autoComplete={'off'} onClick={(e) => e.target.value = ""}/>
-			<label htmlFor="total">Bs</label>
-			<input type="number" name="total" readOnly ref={total}/>
-		</div>
-	)
-}
