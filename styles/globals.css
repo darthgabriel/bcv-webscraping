@@ -1,4 +1,4 @@
-body {
+/* body {
   font-family: monospace;
   display: flex;
   align-items: center;
@@ -13,6 +13,7 @@ main {
 h1 {
   font-size: 5vh;
 }
+*/
 
 .conversor {
   display: flex;
@@ -28,4 +29,98 @@ input {
   height: 2vh;
   text-align: end;
   font-family: monospace;
+} 
+
+
+body {
+  max-width: auto;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
+  /* background-color: aqua; */
 }
+
+
+.container {
+  /* width: 1280px; */
+  /* height: 950px; */
+  width: auto;
+  height: 90vh;
+  background-color: #dadada;
+  border: 0.8rem solid #061946;
+}
+
+.content {
+  display: flex;
+  width: 1200px;
+  height: 600px;
+  /* background-color: #061946; */
+  justify-content: space-between;
+}
+
+#row {
+  flex-direction: row;
+}
+
+
+.logoBcv {
+  width: 50vh;
+  height: 50vh;
+  /* background-color: black; */
+  /* margin-left: 100px; */
+}
+
+.imagenBcv {
+  /* margin: auto; */
+  padding: 1rem;
+  width: 400px;
+  height: 400px;
+  /* margin-top: auto; */
+  /* background-color: red; */
+}
+
+
+.fechaCon {
+  /* padding-top: 8rem; */
+  /* background-color: aqua; */
+  height: 60px;
+  width: 500px;
+}
+
+.fecha {
+  font-size: 38px;
+  font-weight: bold;
+  margin: auto;
+  font-family: monospace;
+}
+
+
+.logo {
+  margin: auto;
+  padding: 5rem;
+  width: 50vh;
+  height: 10vh;
+  /* background-color: black; */
+}
+
+.tasa {
+  width: 60vh;
+  height: 50vh;
+  /* background-color: burlywood; */
+  padding-top: 4rem;
+  padding-right: 6rem;
+}
+
+.fontFlex {
+  margin: auto;
+  width: 700px;
+  height: 200px;
+  /* background-color: red; */
+  padding-top: 2rem;
+}
+
+.font {
+  font-size: 100px;
+  font-family: monospace;
+}
+
