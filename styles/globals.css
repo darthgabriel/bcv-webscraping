@@ -81,14 +81,13 @@ body {
 
 
 .fechaCon {
-  /* padding-top: 8rem; */
   /* background-color: aqua; */
   height: 60px;
   width: 500px;
 }
 
 .fecha {
-  font-size: 38px;
+  font-size: 30px;
   font-weight: bold;
   margin: auto;
   font-family: monospace;
