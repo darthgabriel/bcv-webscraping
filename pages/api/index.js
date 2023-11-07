@@ -1,4 +1,4 @@
-import moment from 'moment/moment'
+import moment from 'moment-timezone'
 import { kv } from '@vercel/kv'
 const axios = require('axios')
 const cheerio = require('cheerio')
@@ -9,7 +9,6 @@ const httpsAgent = new https.Agent({
 })
 
 // configurar moment a venezuela
-moment.locale('es')
 moment.tz.setDefault('America/Caracas')
 
 export default async function handler (req, res) {
@@ -23,8 +22,9 @@ export default async function handler (req, res) {
 const getTasaOffline = async (req, res) => {
   const fechaActual = moment().format('YYYY-MM-DD HH:mm:ss')
   const fechaGuardada = await kv.get('fecha')
-  console.log(fechaGuardada, fechaActual, fechaGuardada < fechaActual)
-  if (fechaGuardada < fechaActual) {
+  console.log(fechaGuardada, fechaActual, moment(fechaGuardada).isBefore(fechaActual))
+  // comprar con moment si la fechaguardada es menor a la fecha actual
+  if (moment(fechaGuardada).isBefore(fechaActual)) {
     const tasa = await webScraping()
     if (tasa !== null) {
       await updateTasaOffline(tasa)
