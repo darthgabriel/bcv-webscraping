@@ -7,22 +7,24 @@ import 'moment/locale/es'
 
 import Conversor from '../components/Conversor'
 
-export default function Home () {
-  const getTasaBcv = () => {
-    axios
-      .post('/api')
-      .then((r) => setTasa(r.data.tasa))
-      .catch((e) => 'SIN CONEXION')
-  }
+const getTasaBcv = async () => {
+  const tasa = await axios
+    .post('/api?user=bcv-webscraping')
+    .then((r) => r.data.tasa)
+    .catch((e) => 'SIN CONEXION')
 
-  const [tasa, setTasa] = useState(getTasaBcv())
+  return tasa
+}
+export default function Home () {
+  const [tasa, setTasa] = useState(0.00)
   const [fecha, setFecha] = useState(moment().format('dddd DD [de] MMMM [del] YYYY h:mm a'))
 
   useEffect(() => {
-    setInterval(() => {
-      getTasaBcv()
-      setFecha(moment().format('dddd DD [de] MMMM [del] YYYY h:mm a'))
-    }, 3600000)
+    getTasaBcv()
+      .then((r) => {
+        setTasa(r)
+      })
+    setFecha(moment().format('dddd DD [de] MMMM [del] YYYY h:mm a'))
   }, [])
 
   return (

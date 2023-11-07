@@ -20,9 +20,11 @@ export default async function handler (req, res) {
 }
 
 const getTasaOffline = async (req, res) => {
+  // recuperar parametro user
+  const { user } = req.query
   const fechaActual = moment().format('YYYY-MM-DD HH:mm:ss')
   const fechaGuardada = await kv.get('fecha')
-  console.log(fechaGuardada, fechaActual, moment(fechaGuardada).isBefore(fechaActual))
+  console.log(`${user} solicita tasa a las ${fechaActual}`)
   // comprar con moment si la fechaguardada es menor a la fecha actual
   if (moment(fechaGuardada).isBefore(fechaActual)) {
     const tasa = await webScraping()
