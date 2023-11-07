@@ -1,28 +1,61 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const https = require('https');
+import moment from 'moment/moment'
+import { kv } from '@vercel/kv'
+const axios = require('axios')
+const cheerio = require('cheerio')
+const https = require('https')
 
 const httpsAgent = new https.Agent({
-	rejectUnauthorized: false,
-});
+  rejectUnauthorized: false
+})
 
-export default async function handler(req, res) {
-	if (req.method === 'POST') {
-		const tasa = await axios
-			.get('http://www.bcv.org.ve/', { httpsAgent })
-			.then((res) => {
-				const $ = cheerio.load(res.data);
-				const string = $('div#dolar').text();
-				let limpio = string.replace(/\s+/g, '');
-				limpio = limpio.replace('USD', '');
-				limpio = limpio.replace(',', '.');
-				limpio = Number(limpio);
-				return limpio;
-			})
-			.catch((e) => console.error('SIN CONEXION'));
+export default async function handler (req, res) {
+  if (req.method === 'GET') return getTasaOffline(req, res)
 
-		res.status(201).json({ tasa: isFinite(tasa) === true ? tasa : 0.00  });
-	} else {
-		res.status(401).end();
-	}
+  if (req.method === 'POST') return getTasaOffline(req, res)
+
+  return res.status(401).end()
+}
+
+const getTasaOffline = async (req, res) => {
+  const fechaActual = moment().format('YYYY-MM-DD HH:mm:ss')
+  const fechaGuardada = await kv.get('fecha')
+  console.log(fechaGuardada, fechaActual, fechaGuardada < fechaActual)
+  if (fechaGuardada < fechaActual) {
+    const tasa = await webScraping()
+    if (tasa !== null) {
+      await updateTasaOffline(tasa)
+    }
+  }
+  const tasa = await kv.get('tasa')
+
+  res.status(201).json({ tasa: tasa || 0.00, fechaGuardada, fechaActual })
+}
+
+const updateTasaOffline = async (newTasa) => {
+  try {
+    await kv.set('tasa', Number(newTasa))
+    await kv.set('fecha', moment().format('YYYY-MM-DD 15:00:00'))
+  } catch (error) {
+    console.log('🚀 ~ error:', error)
+  }
+}
+
+const webScraping = async () => {
+  const tasa = await axios
+    .get('http://www.bcv.org.ve/', { httpsAgent })
+    .then((res) => {
+      const $ = cheerio.load(res.data)
+      const string = $('div#dolar').text()
+      let limpio = string.replace(/\s+/g, '')
+      limpio = limpio.replace('USD', '')
+      limpio = limpio.replace(',', '.')
+      limpio = Number(limpio)
+      console.log('obtenida tasa del bcv: ', limpio)
+      return limpio
+    })
+    .catch((e) => {
+      console.error('SIN CONEXION')
+      return null
+    })
+  return tasa
 }

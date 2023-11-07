@@ -9,16 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "axios": "^1.0.0",
+    "@vercel/kv": "^0.2.4",
+    "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
     "https": "^1.0.0",
     "moment": "^2.29.4",
-    "next": "12.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "next": "^14.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "eslint": "8.24.0",
-    "eslint-config-next": "12.3.1"
+    "standard": "^17.1.0"
   }
 }
