@@ -8,6 +8,10 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false
 })
 
+// configurar moment a venezuela
+moment.locale('es')
+moment.tz.setDefault('America/Caracas')
+
 export default async function handler (req, res) {
   if (req.method === 'GET') return getTasaOffline(req, res)
 
@@ -34,7 +38,8 @@ const getTasaOffline = async (req, res) => {
 const updateTasaOffline = async (newTasa) => {
   try {
     await kv.set('tasa', Number(newTasa))
-    await kv.set('fecha', moment().format('YYYY-MM-DD 15:00:00'))
+    // agregarle una hora a la fecha actual
+    await kv.set('fecha', moment().add(1, 'hours').format('YYYY-MM-DD HH:mm:ss'))
   } catch (error) {
     console.log('🚀 ~ error:', error)
   }
@@ -54,7 +59,7 @@ const webScraping = async () => {
       return limpio
     })
     .catch((e) => {
-      console.error('SIN CONEXION')
+      console.error('SIN CONEXION A BCV')
       return null
     })
   return tasa
