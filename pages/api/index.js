@@ -13,59 +13,63 @@ moment.tz.setDefault('America/Caracas')
 
 export default async function handler (req, res) {
   if (req.method === 'GET') return getTasaOffline(req, res)
-
   if (req.method === 'POST') return getTasaOffline(req, res)
 
   return res.status(401).end()
 }
 
 const getTasaOffline = async (req, res) => {
-  // recuperar parametro user
   const { user } = req.query
-  const fechaActual = moment().format('YYYY-MM-DD HH:mm:ss')
-  console.log(`${user} solicitando`)
-  if (!user) return res.status(401).send({ error: 'api protegida actualmente, requiere suscripcion' })
 
-  const fechaGuardada = await kv.get('fecha')
-  // comprar con moment si la fechaguardada es menor a la fecha actual
-  if (moment(fechaGuardada).isBefore(fechaActual)) {
-    const tasa = await webScraping()
-    if (tasa !== null) {
-      await updateTasaOffline(tasa)
-    }
+  if (!user) {
+    return res.status(400).send({ error: 'Usuario no definido, API protegida' })
   }
-  const tasa = await kv.get('tasa')
-  console.log(`${user} obtuvo tasa ${tasa} a las ${fechaActual}`)
 
-  res.status(201).json({ tasa: tasa || 0.00, fechaGuardada, fechaActual })
+  const fechaActual = moment().format('YYYY-MM-DD HH:mm:ss')
+  console.log(`Usuario solicitando: ${user} a las ${fechaActual}`)
+
+  try {
+    const fechaGuardada = await kv.get('fecha')
+    console.log('Fecha guardada en kv:', fechaGuardada)
+
+    if (!fechaGuardada || moment(fechaGuardada).isBefore(fechaActual)) {
+      console.log('Actualizando tasa online')
+      const tasa = await obtenerTasaOnline()
+      if (tasa !== null) {
+        await actualizarTasaOffline(tasa)
+      }
+    }
+
+    console.log('Obteniendo tasa de kv')
+    const tasa = await kv.get('tasa')
+    console.log(`${user} obtuvo tasa ${tasa} de la fecha: ${fechaGuardada || fechaActual}`)
+
+    return res.status(201).json({ tasa: tasa || 0.00, fechaGuardada, fechaActual })
+  } catch (error) {
+    console.error('Error al obtener tasa:', error)
+    return res.status(500).send({ error: 'Error al obtener tasa' })
+  }
 }
 
-const updateTasaOffline = async (newTasa) => {
+const actualizarTasaOffline = async (nuevaTasa) => {
   try {
-    await kv.set('tasa', Number(newTasa))
-    // agregarle una hora a la fecha actual
+    await kv.set('tasa', Number(nuevaTasa))
     await kv.set('fecha', moment().add(1, 'hours').format('YYYY-MM-DD HH:mm:ss'))
   } catch (error) {
-    console.log('🚀 ~ error:', error)
+    console.error('Error al actualizar tasa offline:', error)
   }
 }
 
-const webScraping = async () => {
-  const tasa = await axios
-    .get('http://www.bcv.org.ve/', { httpsAgent })
-    .then((res) => {
-      const $ = cheerio.load(res.data)
-      const string = $('div#dolar').text()
-      let limpio = string.replace(/\s+/g, '')
-      limpio = limpio.replace('USD', '')
-      limpio = limpio.replace(',', '.')
-      limpio = Number(limpio)
-      console.log('obtenida tasa del bcv: ', limpio)
-      return limpio
-    })
-    .catch((e) => {
-      console.error('SIN CONEXION A BCV')
-      return null
-    })
-  return tasa
+const obtenerTasaOnline = async () => {
+  try {
+    const response = await axios.get('https://www.bcv.org.ve/', { httpsAgent })
+    const $ = cheerio.load(response.data)
+    let tasa = $('div#dolar').text().replace(/\s+/g, '').replace('USD', '').replace(',', '.')
+    tasa = Number(tasa)
+    console.log('Tasa obtenida del BCV:', tasa)
+    return tasa
+  } catch (error) {
+    console.error('Error al obtener tasa online:', error)
+    return null
+  }
 }
