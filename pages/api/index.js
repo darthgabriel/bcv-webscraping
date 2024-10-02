@@ -47,7 +47,7 @@ const getTasaOffline = async (req, res) => {
     return res.status(201).json({ tasa: tasa || 0.00, fechaGuardada, fechaActual })
   } catch (error) {
     console.error('Error al obtener tasa:', error)
-    return res.status(500).send({ error: 'Error al obtener tasa' })
+    return res.status(500).json({ error: 'Error al obtener tasa' })
   }
 }
 
